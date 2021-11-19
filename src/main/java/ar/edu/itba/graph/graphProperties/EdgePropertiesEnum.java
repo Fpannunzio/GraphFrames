@@ -1,4 +1,4 @@
-package ar.edu.itba.graph;
+package ar.edu.itba.graph.graphProperties;
 
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;

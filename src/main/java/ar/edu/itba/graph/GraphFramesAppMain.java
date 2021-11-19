@@ -1,16 +1,26 @@
 package ar.edu.itba.graph;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import static ar.edu.itba.graph.TpeUtils.NEGATIVE_LATITUTE;
+import static ar.edu.itba.graph.TpeUtils.NEGATIVE_LONGITUDE;
+import static ar.edu.itba.graph.TpeUtils.loadEdges;
+import static ar.edu.itba.graph.TpeUtils.loadSchemaEdges;
+import static ar.edu.itba.graph.TpeUtils.loadSchemaVertices;
+import static ar.edu.itba.graph.TpeUtils.loadVertex;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
+import static org.apache.spark.sql.functions.col;
+import static org.apache.spark.sql.functions.collect_list;
+import static org.apache.spark.sql.functions.sort_array;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLReader;
 
@@ -20,14 +30,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.StructField;
-import org.apache.spark.sql.types.StructType;
 import org.graphframes.GraphFrame;
 
 public class GraphFramesAppMain {
@@ -43,111 +50,99 @@ public class GraphFramesAppMain {
 		GraphMLReader reader = new GraphMLReader(auxGraph);
 
 		final Configuration conf = new Configuration();
-        final FileSystem fileSystem = FileSystem.get(conf);
+		final FileSystem fileSystem = FileSystem.get(conf);
 
-        final Path path = new Path(args[0]);
+		final Path path = new Path(args[0]);
 
-        final FSDataInputStream is = fileSystem.open(path);
+		final Path parent = path.getParent();
 
-        reader.inputGraph(is);
+		final FSDataInputStream is = fileSystem.open(path);
 
-		// for (Edge edge : auxGraph.getEdges()) {
-		// 	System.out.println("Edge " + edge.getId() + " goes from " + edge.getVertex(Direction.OUT).getId() + " to " + edge.getVertex(Direction.IN).getId());
-		// }
-	 
-		// Iterable<Vertex> vertices = auxGraph.getVertices();
-    	// Iterator<Vertex> verticesIterator = vertices.iterator();
-		
-	 
-		// while (verticesIterator.hasNext()) {
-	 
-		//   Vertex vertex = verticesIterator.next();
-		  
-		//   System.out.println("Vertex index = " + vertex.getId());
-		// }
+		reader.inputGraph(is);
 
-		List<Row> vertices = loadVertex(auxGraph.getVertices());
-		Dataset<Row> verticesDF = sqlContext.createDataFrame(vertices, loadSchemaVertices());
-		
+		final List<Row> vertices = loadVertex(auxGraph.getVertices());
+		final Dataset<Row> verticesDF = sqlContext.createDataFrame(vertices, loadSchemaVertices());
 
-		List<Row> edges = loadEdges(auxGraph.getEdges());
-		Dataset<Row> edgesDF = sqlContext.createDataFrame(edges, loadSchemaEdges());
+		final List<Row> edges = loadEdges(auxGraph.getEdges());
+		final Dataset<Row> edgesDF = sqlContext.createDataFrame(edges, loadSchemaEdges());
 
-		GraphFrame myGraph = GraphFrame.apply(verticesDF, edgesDF);
+		final GraphFrame myGraph = GraphFrame.apply(verticesDF, edgesDF);
 
-		Dataset<Row> oneStop = myGraph
-			.filterVertices("labelV = 'airport'")
-			.filterEdges("labelE = 'route'")
-			.find("(a)-[e]->(b); (b)-[e2]->(c)")
-			.filter("a.lat < 0 and a.lon < 0")
-			.filter("c.code = 'SEA'")
-			.filter("a.id != b.id and a.id != c.id and b.id != c.id");
+		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+		firstExercise(myGraph, fileSystem, timeStamp, parent);
+		secondExercise(myGraph, fileSystem, timeStamp, parent);
 
-		Dataset<Row> oneStopVertex = oneStop.select("a.code", "a.lat", "a.lon", "b.code", "c.code");
-		
-		Dataset<Row> direct = myGraph
-			.filterVertices("labelV = 'airport'")
-			.filterEdges("labelE = 'route'")
-			.find("(a)-[e]->(b)")
-			.filter("a.lat < 0 and a.lon < 0")
-			.filter("b.code = 'SEA'")
-			.filter("a.id != b.id");
-		
-		Dataset<Row> directVertex = direct.select("a.code", "a.lat", "a.lon", "b.code");	
-			
-		System.out.println("OneStepVertex: " + oneStopVertex.collectAsList().size() + " Direct: " + directVertex.collectAsList().size());
-		// directVertex.collectAsList().stream().forEach(row -> System.out.println(row.toString()));
-	
-		// oneStopVertex.collectAsList().stream().forEach(row -> System.out.println(row.toString()));
-			
 		sparkContext.close();
 
 	}
 
+	private static void firstExercise(final GraphFrame myGraph, final FileSystem fileSystem, final String timeStamp,
+			final Path parent) throws IOException {
+		final Dataset<Row> oneStop = myGraph.filterVertices("labelV = 'airport'").filterEdges("labelE = 'route'")
+				.find("(a)-[e]->(b); (b)-[e2]->(c)")
+				.filter(NEGATIVE_LATITUTE)
+				.filter(NEGATIVE_LONGITUDE)
+				.filter("c.code = 'SEA'").filter("a.id != b.id and a.id != c.id and b.id != c.id");
 
-	public static StructType loadSchemaVertices() {
-		// metadata
-		List<StructField> vertFields = Arrays.stream(VertexPropertiesEnum.values()).map(VertexPropertiesEnum::toStructField).collect(Collectors.toList());
-		vertFields.add(0, DataTypes.createStructField("id",  DataTypes.LongType, false));
-		StructType schema = DataTypes.createStructType(vertFields);
+		final Dataset<Row> oneStopVertex = oneStop.select("a.code", "a.lat", "a.lon", "b.code", "c.code");
 
-		return schema;
-	}
+		final Dataset<Row> direct = myGraph.filterVertices("labelV = 'airport'").find("(a)-[e]->(b)")
+				.filter(NEGATIVE_LATITUTE)
+				.filter(NEGATIVE_LONGITUDE)
+				.filter("b.code = 'SEA'").filter("a.id != b.id");
 
-	public static StructType loadSchemaEdges() {
-		// metadata
-		List<StructField> edgeFields = Arrays.stream(EdgePropertiesEnum.values()).map(EdgePropertiesEnum::toStructField).collect(Collectors.toList());
-		edgeFields.add(0, DataTypes.createStructField("id", DataTypes.LongType, false));
-        edgeFields.add(1, DataTypes.createStructField("src", DataTypes.LongType, false));
-        edgeFields.add(2, DataTypes.createStructField("dst", DataTypes.LongType, false));
-		StructType schema = DataTypes.createStructType(edgeFields);
+		final Dataset<Row> directVertex = direct.select("a.code", "a.lat", "a.lon", "b.code");
 
-		return schema;
-	}
+		oneStopVertex.show(1000);
+		directVertex.show();
 
-	public static List<Row> loadVertex(final Iterable<Vertex> vIterator) {
-		final List<Row> vertexList = new ArrayList<Row>();
-		final List<String> identifiers = Arrays.stream(VertexPropertiesEnum.values()).map(VertexPropertiesEnum::getIdentifier).collect(Collectors.toList());	
-		for (final Vertex vertex : vIterator) {
-		  final List<Object> properties = identifiers.stream().map(identifier -> vertex.getProperty(identifier)).collect(Collectors.toList());
-		  properties.add(0, Long.valueOf((String) vertex.getId()));
-		  vertexList.add(RowFactory.create(properties.toArray(new Object[0])));
-		}
+		final BufferedWriter br = TpeUtils.getBufferedWriter(fileSystem, parent, timeStamp + "-b1.txt");
 
-		return vertexList;
-	}
-
-	public static List<Row> loadEdges(final Iterable<Edge> eIterator) {
-		final List<Row> edgeList = new ArrayList<Row>();
+		br.write("One step\n");
+		br.write("\n");
 		
-		for (final Edge edge : eIterator) {
-		  final List<Object> properties = edge.getPropertyKeys().stream().map(key -> edge.getProperty(key)).collect(Collectors.toList());
-		  properties.add(0, Long.valueOf((String) edge.getId()));
-		  properties.add(1, Long.valueOf((String) edge.getVertex(Direction.OUT).getId()));
-		  properties.add(2, Long.valueOf((String) edge.getVertex(Direction.IN).getId()));
-		  edgeList.add(RowFactory.create(properties.toArray(new Object[0])));
+		for (final Row row : oneStopVertex.collectAsList()) {
+			br.write(row.toString());
+			br.write("\n");
+			// os.writeUTF(row.toString());
 		}
 
-		return edgeList;
+		br.write("\n");
+		br.write("Direct\n");
+		br.write("\n");
+		
+		for (final Row row : directVertex.collectAsList()) {
+			br.write(row.toString());
+			// os.writeUTF(row.toString());
+		}
+		br.close();
+	}
+
+	private static void secondExercise(final GraphFrame myGraph, final FileSystem fileSystem, final String timeStamp,
+			final Path parent) throws IOException {
+
+		final Dataset<Row> result = myGraph.filterEdges("labelE = 'contains'").find("(c)-[]->(a); (p)-[]->(a)")
+				.filter(col("a.labelV").eqNullSafe("airport")).filter(col("c.labelV").eqNullSafe("continent"))
+				.filter(col("p.labelV").eqNullSafe("country"))
+				.select(col("c.desc").alias("continent"), col("a.country").alias("country"),
+						col("p.desc").alias("countryDesc"), col("a.elev").alias("elev"))
+				.groupBy(col("continent"), col("country"), col("countryDesc"))
+				.agg(sort_array(collect_list(col("elev"))).alias("elevations"))
+				.sort(col("continent"), col("country"), col("countryDesc"));
+
+		result.show(1000);
+		result.printSchema();
+
+		final Dataset<Row> resultVertex = result.select("continent", "country", "countryDesc", "elevations");
+		
+		final BufferedWriter br = TpeUtils.getBufferedWriter(fileSystem, parent, timeStamp + "-b2.txt");
+
+		br.write("Countries elevations\n");
+		br.write("\n");
+		for (final Row row : resultVertex.collectAsList()) {
+			br.write(row.toString());
+			br.write("\n");
+		}
+		br.close();
 	}
 }
