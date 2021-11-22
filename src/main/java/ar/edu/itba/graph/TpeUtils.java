@@ -15,7 +15,6 @@ import com.tinkerpop.blueprints.Vertex;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.types.DataTypes;
@@ -26,10 +25,6 @@ import ar.edu.itba.graph.graphProperties.EdgePropertiesEnum;
 import ar.edu.itba.graph.graphProperties.VertexPropertiesEnum;
 
 public class TpeUtils {
-    
-	public static final Column NEGATIVE_LATITUTE = new Column("a.lat").isNotNull().and(new Column("a.lat").lt(Double.valueOf("0")));
-	public static final Column NEGATIVE_LONGITUDE = new Column("a.lon").isNotNull().and(new Column("a.lon").lt(Double.valueOf("0")));
-
 
     public static StructType loadSchemaVertices() {
 		// metadata
