@@ -1,8 +1,11 @@
 package ar.edu.itba.graph;
 
+import static ar.edu.itba.graph.Queries.countriesElevationsAverage;
 import static ar.edu.itba.graph.Queries.countriesElevationsQuery;
 import static ar.edu.itba.graph.Queries.directFlightsQuery;
+import static ar.edu.itba.graph.Queries.directFlightsQueryWithoutFilter;
 import static ar.edu.itba.graph.Queries.oneStopFlightsQuery;
+import static ar.edu.itba.graph.Queries.oneStopFlightsQueryWithoutFilter;
 import static ar.edu.itba.graph.TpeUtils.loadEdges;
 import static ar.edu.itba.graph.TpeUtils.loadSchemaEdges;
 import static ar.edu.itba.graph.TpeUtils.loadSchemaVertices;
@@ -65,8 +68,9 @@ public class GraphFramesAppMain {
 		final GraphFrame myGraph = GraphFrame.apply(verticesDF, edgesDF);
 
 		String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-		firstExercise(myGraph, fileSystem, timeStamp, parent);
+		// firstExercise(myGraph, fileSystem, timeStamp, parent);
 		secondExercise(myGraph, fileSystem, timeStamp, parent);
+		secondExerciseTest(myGraph, fileSystem, timeStamp, parent);
 
 		sparkContext.close();
 
@@ -121,6 +125,55 @@ public class GraphFramesAppMain {
 		br.close();
 	}
 
+	private static void firstExerciseTest(final GraphFrame myGraph, final FileSystem fileSystem, final String timeStamp,
+			final Path parent) throws IOException {
+
+		final Dataset<Row> oneStop = oneStopFlightsQuery(myGraph);
+
+		final Dataset<Row> oneStopVertex = oneStop.select("airportCode", "latitude", "longitude", "stepAirportCode", "destAirportCode");
+
+		final Dataset<Row> direct = directFlightsQueryWithoutFilter(myGraph);
+
+		final Dataset<Row> directVertex = direct.select("airportCode", "latitude", "longitude", "destAirportCode");
+
+		oneStopVertex.show(1000);
+		directVertex.show();
+
+		final BufferedWriter br = TpeUtils.getBufferedWriter(fileSystem, parent, timeStamp + "-b1.txt");
+
+		br.write("One step\n");
+		br.write("\n");
+		
+		br.write("AirportCode \t Latitude \t Longitude \t Travel\n");
+		for (final Row row : oneStopVertex.collectAsList()) {
+			br.write(row.getAs("airportCode").toString() + "\t" 
+				+ row.getAs("latitude").toString() + "\t" 
+				+ row.getAs("longitude").toString() + "\t" 
+				+ "[" 
+				+ row.getAs("airportCode").toString() + ", " 
+				+ row.getAs("stepAirportCode").toString() + ", "
+				+ row.getAs("destAirportCode").toString() 
+				+ "]\n"
+				);
+
+		}
+		br.write("\n");
+		br.write("Direct\n");
+		br.write("\n");
+		br.write("AirportCode \t Latitude \t Longitude \t Travel\n");
+		for (final Row row : directVertex.collectAsList()) {
+			br.write(row.getAs("airportCode").toString() + "\t" 
+				+ row.getAs("latitude").toString() + "\t" 
+				+ row.getAs("longitude").toString() + "\t" 
+				+ "[" 
+				+ row.getAs("airportCode").toString() + ", " 
+				+ row.getAs("destAirportCode").toString() 
+				+ "]\n"
+				);
+		}
+		br.close();
+	}
+
 	private static void secondExercise(final GraphFrame myGraph, final FileSystem fileSystem, final String timeStamp,
 			final Path parent) throws IOException {
 
@@ -132,7 +185,7 @@ public class GraphFramesAppMain {
 		final Dataset<Row> resultVertex = result.select("continent", "country", "countryDesc", "elevations");
 		
 		final BufferedWriter br = TpeUtils.getBufferedWriter(fileSystem, parent, timeStamp + "-b2.txt");
-
+		
 		br.write("Countries elevations\n");
 		br.write("\n");
 		br.write("Continent \t Country \t CountryDescription \t Elevations\n");		
@@ -144,5 +197,36 @@ public class GraphFramesAppMain {
 				);
 		}
 		br.close();
+
+		myGraph.vertices().printSchema();
+		myGraph.edges().printSchema();
+	}
+
+	private static void secondExerciseTest(final GraphFrame myGraph, final FileSystem fileSystem, final String timeStamp,
+			final Path parent) throws IOException {
+
+		final Dataset<Row> result = countriesElevationsAverage(myGraph);
+
+		result.show(1000);
+		result.printSchema();
+
+		final Dataset<Row> resultVertex = result.select("continent", "country", "countryDesc", "elevationsAvg");
+		
+		final BufferedWriter br = TpeUtils.getBufferedWriter(fileSystem, parent, timeStamp + "-b22.txt");
+		
+		br.write("Countries elevations\n");
+		br.write("\n");
+		br.write("Continent \t Country \t CountryDescription \t ElevationsAvg\n");		
+		for (final Row row : resultVertex.collectAsList()) {
+			br.write(row.getAs("continent").toString() + "\t" 
+				+ row.getAs("country").toString() + "\t" 
+				+ row.getAs("countryDesc").toString() + "\t" 
+				+ row.getAs("elevationsAvg").toString() + "\n"
+				);
+		}
+		br.close();
+
+		myGraph.vertices().printSchema();
+		myGraph.edges().printSchema();
 	}
 }

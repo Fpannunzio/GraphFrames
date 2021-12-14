@@ -100,7 +100,400 @@
   <key id='labelE'  for='edge' attr.name='labelE'  attr.type='string'></key>
 
   <graph id='routes' edgedefault='directed'>
-
     
+    <node id='1'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>BFM</data>
+      <data key='icao'>KBFM</data>
+      <data key='city'>Mobile</data>
+      <data key='desc'>Mobile Downtown Airport</data>
+      <data key='region'>US-AL</data>
+      <data key='runways'>2</data>
+      <data key='longest'>9618</data>
+      <data key='elev'>26</data>
+      <data key='country'>US</data>
+      <data key='lat'>30.6268005371</data>
+      <data key='lon'>-88.0680999756</data>
+    </node>
+
+    <node id='2'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>TMC</data>
+      <data key='icao'>WADT</data>
+      <data key='city'>Waikabubak-Sumba Island</data>
+      <data key='desc'>Tambolaka Airport</data>
+      <data key='region'>ID-NT</data>
+      <data key='runways'>1</data>
+      <data key='longest'>5905</data>
+      <data key='elev'>161</data>
+      <data key='country'>ID</data>
+      <data key='lat'>-9.4097204208374</data>
+      <data key='lon'>-119.244003295898</data>
+    </node>
+
+    <node id='3'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>CGK</data>
+      <data key='icao'>WIII</data>
+      <data key='city'>Jakarta</data>
+      <data key='desc'>Soekarno-Hatta International Airport</data>
+      <data key='region'>ID-BT</data>
+      <data key='runways'>2</data>
+      <data key='longest'>12008</data>
+      <data key='elev'>34</data>
+      <data key='country'>ID</data>
+      <data key='lat'>-6.1255698204</data>
+      <data key='lon'>106.65599823</data>
+    </node>
+
+    <node id='4'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>SFO</data>
+      <data key='icao'>KSFO</data>
+      <data key='city'>San Francisco</data>
+      <data key='desc'>San Francisco International Airport</data>
+      <data key='region'>US-CA</data>
+      <data key='runways'>4</data>
+      <data key='longest'>11870</data>
+      <data key='elev'>13</data>
+      <data key='country'>US</data>
+      <data key='lat'>-37.6189994812012</data>
+      <data key='lon'>-122.375</data>
+    </node>
+
+    <node id='5'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>SJC</data>
+      <data key='icao'>KSJC</data>
+      <data key='city'>San Jose</data>
+      <data key='desc'>Norman Y. Mineta San Jose International Airport</data>
+      <data key='region'>US-CA</data>
+      <data key='runways'>3</data>
+      <data key='longest'>11000</data>
+      <data key='elev'>62</data>
+      <data key='country'>US</data>
+      <data key='lat'>-37.3625984191895</data>
+      <data key='lon'>-121.929000854492</data>
+    </node>
+
+    <node id='6'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>BWI</data>
+      <data key='icao'>KBWI</data>
+      <data key='city'>Baltimore</data>
+      <data key='desc'>Baltimore/Washington International Airport</data>
+      <data key='region'>US-MD</data>
+      <data key='runways'>3</data>
+      <data key='longest'>10502</data>
+      <data key='elev'>143</data>
+      <data key='country'>US</data>
+      <data key='lat'>-39.17539978</data>
+      <data key='lon'>-76.66829681</data>
+    </node>
+
+    <node id='7'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>ZRH</data>
+      <data key='icao'>LSZH</data>
+      <data key='city'>Zurich</data>
+      <data key='desc'>Zurich-Kloten Airport</data>
+      <data key='region'>CH-ZH</data>
+      <data key='runways'>3</data>
+      <data key='longest'>12139</data>
+      <data key='elev'>1416</data>
+      <data key='country'>CH</data>
+      <data key='lat'>47.4646987915039</data>
+      <data key='lon'>8.54916954040527</data>
+    </node>
+
+    <node id='8'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>GVA</data>
+      <data key='icao'>LSGG</data>
+      <data key='city'>Geneva</data>
+      <data key='desc'>Geneva-Cointrin International Airport</data>
+      <data key='region'>CH-GE</data>
+      <data key='runways'>2</data>
+      <data key='longest'>12795</data>
+      <data key='elev'>1411</data>
+      <data key='country'>CH</data>
+      <data key='lat'>46.2380981445312</data>
+      <data key='lon'>6.10895013809204</data>
+    </node>
+
+    <node id='9'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>BRN</data>
+      <data key='icao'>LSZB</data>
+      <data key='city'>Bern</data>
+      <data key='desc'>Bern Belp Airport</data>
+      <data key='region'>CH-BE</data>
+      <data key='runways'>3</data>
+      <data key='longest'>4954</data>
+      <data key='elev'>1674</data>
+      <data key='country'>CH</data>
+      <data key='lat'>46.914100647</data>
+      <data key='lon'>7.49714994431</data>
+    </node>
+
+    <node id='10'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>ACH</data>
+      <data key='icao'>LSZR</data>
+      <data key='city'>Altenrhein</data>
+      <data key='desc'>St Gallen Altenrhein Airport</data>
+      <data key='region'>CH-SG</data>
+      <data key='runways'>3</data>
+      <data key='longest'>4922</data>
+      <data key='elev'>1306</data>
+      <data key='country'>CH</data>
+      <data key='lat'>47.4850006104</data>
+      <data key='lon'>9.56077003479</data>
+    </node>
+
+    <node id='11'>
+      <data key='type'>country</data>
+      <data key='code'>ID</data>
+      <data key='desc'>Indonesia</data>
+      <data key='labelV'>country</data>
+    </node>
+
+    <node id='12'>
+      <data key='type'>country</data>
+      <data key='code'>US</data>
+      <data key='desc'>United States</data>
+      <data key='labelV'>country</data>
+    </node>
+    
+    <node id='13'>
+      <data key='type'>country</data>
+      <data key='code'>AR</data>
+      <data key='desc'>Argentina</data>
+      <data key='labelV'>country</data>
+    </node>
+
+    <node id='14'>
+      <data key='type'>country</data>
+      <data key='code'>ZA</data>
+      <data key='desc'>South Africa</data>
+      <data key='labelV'>country</data>
+    </node>
+
+    <node id='15'>
+      <data key='type'>country</data>
+      <data key='code'>CH</data>
+      <data key='desc'>Switzerland</data>
+      <data key='labelV'>country</data>
+    </node>
+
+    <node id='16'>
+      <data key='type'>continent</data>
+      <data key='code'>NA</data>
+      <data key='desc'>North America</data>
+      <data key='labelV'>continent</data>
+    </node>
+
+    <node id='17'>
+      <data key='type'>continent</data>
+      <data key='code'>EU</data>
+      <data key='desc'>Europe</data>
+      <data key='labelV'>continent</data>
+    </node>
+    <node id='18'>
+      <data key='type'>continent</data>
+      <data key='code'>AS</data>
+      <data key='desc'>Asia</data>
+      <data key='labelV'>continent</data>
+    </node>
+    <node id='19'>
+      <data key='type'>continent</data>
+      <data key='code'>AF</data>
+      <data key='desc'>Africa</data>
+      <data key='labelV'>continent</data>
+    </node>
+    <edge id='20' source='3' target='1'>
+      <data key='labelE'>route</data>
+      <data key='dist'>239</data>
+    </edge>
+    <edge id='21' source='7' target='1'>
+      <data key='labelE'>route</data>
+      <data key='dist'>239</data>
+    </edge>
+    <edge id='22' source='8' target='1'>
+      <data key='labelE'>route</data>
+      <data key='dist'>239</data>
+    </edge>
+    <edge id='23' source='5' target='4'>
+      <data key='labelE'>route</data>
+      <data key='dist'>239</data>
+    </edge>
+    <edge id='24' source='6' target='3'>
+      <data key='labelE'>route</data>
+      <data key='dist'>239</data>
+    </edge>
+    <edge id='25' source='11' target='2'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='26' source='11' target='3'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='27' source='12' target='1'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='28' source='12' target='4'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='29' source='12' target='5'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='30' source='12' target='6'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='31' source='15' target='7'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='32' source='15' target='8'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='33' source='15' target='9'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='34' source='15' target='10'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='35' source='16' target='1'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='36' source='16' target='4'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='37' source='16' target='5'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='38' source='16' target='6'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='39' source='17' target='7'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='40' source='17' target='8'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='41' source='17' target='9'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='42' source='17' target='10'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='43' source='18' target='2'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='44' source='18' target='3'>
+      <data key='labelE'>contains</data>
+    </edge>
+
+    <node id='45'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>CPT</data>
+      <data key='icao'>FACT</data>
+      <data key='city'>Cape Town</data>
+      <data key='desc'>Cape Town International Airport</data>
+      <data key='region'>ZA-WC</data>
+      <data key='runways'>2</data>
+      <data key='longest'>10502</data>
+      <data key='elev'>151</data>
+      <data key='country'>ZA</data>
+      <data key='lat'>-33.9648017883</data>
+      <data key='lon'>18.6016998291</data>
+    </node>
+
+    <node id='46'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>CNQ</data>
+      <data key='icao'>SARC</data>
+      <data key='city'>Corrientes</data>
+      <data key='desc'>Corrientes Airport</data>
+      <data key='region'>AR-W</data>
+      <data key='runways'>1</data>
+      <data key='longest'>6890</data>
+      <data key='elev'>202</data>
+      <data key='country'>AR</data>
+      <data key='lat'>-27.445502</data>
+      <data key='lon'>-58.761863</data>
+    </node>
+
+    <node id='47'>
+      <data key='labelV'>airport</data>
+      <data key='type'>airport</data>
+      <data key='code'>AKL</data>
+      <data key='icao'>NZAA</data>
+      <data key='city'>Auckland</data>
+      <data key='desc'>Auckland International Airport</data>
+      <data key='region'>NZ-AUK</data>
+      <data key='runways'>2</data>
+      <data key='longest'>11926</data>
+      <data key='elev'>23</data>
+      <data key='country'>NZ</data>
+      <data key='lat'>-37.0080986023</data>
+      <data key='lon'>174.792007446</data>
+    </node>
+
+    <node id='48'>
+      <data key='type'>country</data>
+      <data key='code'>NZ</data>
+      <data key='desc'>New Zealand</data>
+      <data key='labelV'>country</data>
+    </node>
+
+    <node id='49'>
+      <data key='type'>continent</data>
+      <data key='code'>SA</data>
+      <data key='desc'>South America</data>
+      <data key='labelV'>continent</data>
+    </node>
+    <node id='50'>
+      <data key='type'>continent</data>
+      <data key='code'>OC</data>
+      <data key='desc'>Oceania</data>
+      <data key='labelV'>continent</data>
+    </node>
+    <node id='51'>
+      <data key='type'>continent</data>
+      <data key='code'>AN</data>
+      <data key='desc'>Antarctica</data>
+      <data key='labelV'>continent</data>
+    </node>
+
+    <edge id='52' source='48' target='47'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='53' source='50' target='47'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='54' source='13' target='46'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='55' source='49' target='46'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='56' source='14' target='45'>
+      <data key='labelE'>contains</data>
+    </edge>
+    <edge id='57' source='19' target='45'>
+      <data key='labelE'>contains</data>
+    </edge>
+  
   </graph>
 </graphml>
